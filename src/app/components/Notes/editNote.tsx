@@ -3,15 +3,22 @@ import { useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useFindUser } from "@/app/api/userAPIs/findUser";
+import { useGetANote } from "@/app/api/noteAPIs/getNote";
+import { NoteType, ViewNoteType } from "@/app/types/types";
+import { useEditNote } from "@/app/api/noteAPIs/editNote";
 
 const newNoteSchema = z.object({
   title: z.string().min(1, "Enter a valid title"),
   email: z.string().email("Invalid Email"),
+  content: z.string(),
+  permission: z.string(),
 });
 
 type editNoteData = z.infer<typeof newNoteSchema>;
 
-const EditNote = () => {
+const EditNote = ({ noteId }: ViewNoteType) => {
   const {
     register,
     handleSubmit,
@@ -21,7 +28,57 @@ const EditNote = () => {
   });
   const router = useRouter();
 
-  const onFormSubmit = (e: any) => {
+  const [noteData, setNoteData] = useState<NoteType>();
+  const [collaborator, setCollaborator] = useState("");
+
+  const { getANote } = useGetANote();
+  const { findUserByEmail } = useFindUser();
+  const { editNote } = useEditNote();
+
+  useEffect(() => {
+    // get note data using noteid
+    getNoteData().then(getUserData);
+  }, []);
+
+  const getNoteData = async () => {
+    const res = await getANote(noteId);
+    console.log("Edited response :", res);
+
+    if (res) {
+      setNoteData(res);
+      // toast login sucessful
+    } else {
+      // toast displaying invalid messgae
+    }
+  };
+
+  const getUserData = async () => {
+    if (noteData?.collaborator) {
+      const res = await findUserByEmail(noteData?.collaborator?.user_email);
+      if (res) setCollaborator(res.name);
+    }
+  };
+
+  const onFormSubmit = async (e: any) => {
+    // post newly edited data
+    const user = await findUserByEmail(e.email);
+    if (user) {
+      const note = {
+        id: noteId,
+        title: e.title,
+        content: e.content,
+        collaborator: {
+          user_email: e.email,
+          permission: e.permission,
+        },
+      };
+      const res = await editNote(note);
+      if (res) {
+        // toast message for success
+      }
+    } else {
+      //toast message for invalid email
+    }
     console.log(e);
   };
 
@@ -55,6 +112,7 @@ const EditNote = () => {
             <label className="w-2/4 text-right">Title :</label>
             <div className="w-full">
               <input
+                placeholder={noteData?.title}
                 className="bg-orange-200/50 rounded-sm p-2 w-2/3 text-black"
                 {...register("title")}
               />
@@ -69,8 +127,10 @@ const EditNote = () => {
             <label className="w-2/4 text-right">Body :</label>
             <div className="w-full ">
               <textarea
+                placeholder={noteData?.content}
                 className="bg-orange-200/50 rounded-sm p-2 w-2/3 text-black"
                 rows={8}
+                {...register("content")}
               />
             </div>
           </div>
@@ -78,6 +138,7 @@ const EditNote = () => {
             <label className="w-2/4 text-right">Share with :</label>
             <div className="w-full">
               <input
+                placeholder={collaborator}
                 className="bg-orange-200/50 rounded-sm p-2 w-2/3 text-black"
                 {...register("email")}
               />
@@ -86,6 +147,18 @@ const EditNote = () => {
                   {errors.email.message}
                 </p>
               )}
+            </div>
+          </div>
+          <div className="email-container flex gap-3 my-10 items-center">
+            <label className="w-2/4 text-right">Permission :</label>
+            <div className="w-full">
+              <select
+                className="bg-orange-200/50 px-2 py-1 rounded-lg w-2/3"
+                {...register("permission")}
+              >
+                <option value="view">View</option>
+                <option value="edit">Edit</option>
+              </select>
             </div>
           </div>
 

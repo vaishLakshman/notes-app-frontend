@@ -8,7 +8,7 @@ const LandingPage = () => {
       <div>
         <div className="text-center mb-10">
           <h1 className="font-semibold text-lg mb-2">Note-It-Down</h1>
-          <h3>A simple web application to jot down your notes.</h3>
+          <h3>A simple & minimalist web application to jot down your notes.</h3>
         </div>
         <div className="w-fit mx-auto flex gap-5">
           <button

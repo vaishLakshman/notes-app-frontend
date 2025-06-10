@@ -1,19 +1,22 @@
+"use client";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useCreateNote } from "@/app/api/noteAPIs/createNote";
+import { NoteActionType } from "@/app/types/types";
+import toast from "react-hot-toast";
+import { useFindUser } from "@/app/api/userAPIs/findUser";
 
 const newNoteSchema = z.object({
   title: z.string().min(1, "Enter a valid title"),
   email: z.string().email("Invalid Email"),
+  content: z.string(),
+  permission: z.string(),
 });
 
 type newNoteData = z.infer<typeof newNoteSchema>;
-export interface NoteActionType {
-  isOpen: boolean;
-  setIsOpen: (data: boolean) => void;
-}
 
-const NewNote = ({ isOpen, setIsOpen }: NoteActionType) => {
+const NewNote = ({ user_id, isOpen, setIsOpen }: NoteActionType) => {
   const {
     register,
     handleSubmit,
@@ -22,7 +25,35 @@ const NewNote = ({ isOpen, setIsOpen }: NoteActionType) => {
     resolver: zodResolver(newNoteSchema),
   });
 
-  const onFormSubmit = (e: any) => {
+  const { findUserByEmail } = useFindUser();
+  const { createNote } = useCreateNote();
+
+  const onFormSubmit = async (e: any) => {
+    const user = await findUserByEmail(e.email);
+    console.log("user email", e);
+
+    if (user) {
+      const note = {
+        title: e.title,
+        content: e.content,
+        owner: user_id,
+        collaborator: {
+          user_email: e.email,
+          permission: e.permission,
+        },
+      };
+      const res = await createNote(note);
+      console.log("hy", note);
+
+      if (res) {
+        // toast message for success
+        toast.success("New Note Created");
+        setIsOpen(!isOpen);
+      }
+    } else {
+      //toast message for invalid email
+      toast.error("Invalid Email of Collaborator");
+    }
     console.log(e);
   };
 
@@ -30,7 +61,7 @@ const NewNote = ({ isOpen, setIsOpen }: NoteActionType) => {
     <div className="absolute lg:pb-12 w-full backdrop-blur-md">
       <form
         onSubmit={handleSubmit(onFormSubmit)}
-        className=" lg:w-3/5 mx-auto mt-15 pb-7 bg-orange-200 rounded-2xl border-5 border-orange-300  "
+        className=" lg:w-3/7 mx-auto mt-15 pb-7 bg-orange-200 shadow-xl border- border-orange-300"
       >
         <div className="flex justify-end">
           <button
@@ -55,12 +86,13 @@ const NewNote = ({ isOpen, setIsOpen }: NoteActionType) => {
         </div>
 
         <h1 className="w-fit mx-auto text-2xl font-bold">New Note</h1>
-        <div className="w-full mx-auto">
-          <div className="email-container flex gap-3 my-10 items-center">
-            <label className="w-2/4 text-right">Title :</label>
-            <div className="w-full">
+        <div className="w-fit mx-auto ">
+          <div className="email-container flex gap-3 my-5 mb-7 items-center">
+            <label className="w-1/4 text-right">Title :</label>
+            <div className="w-fit">
               <input
-                className="bg-orange-100/70 rounded-sm p-2 w-2/3 text-black"
+                placeholder="Title"
+                className="bg-orange-100/70 rounded-sm p-2 min-w-[30rem] text-black"
                 {...register("title")}
               />
               {errors.title && (
@@ -70,20 +102,23 @@ const NewNote = ({ isOpen, setIsOpen }: NoteActionType) => {
               )}
             </div>
           </div>
-          <div className="password-container  flex gap-3 my-10 ">
-            <label className="w-2/4 text-right">Body :</label>
-            <div className="w-full ">
+          <div className="password-container  flex gap-3 my-5 ">
+            <label className="w-1/4 text-right">Body :</label>
+            <div className="w-fit ">
               <textarea
-                className="bg-orange-100/70 rounded-sm p-2 w-2/3 text-black"
+                placeholder="Enter your note here"
+                className="bg-orange-100/70 rounded-sm p-2 min-w-[30rem] text-black"
                 rows={8}
+                {...register("content")}
               />
             </div>
           </div>
-          <div className="email-container flex gap-3 my-10 items-center">
-            <label className="w-2/4 text-right">Share with :</label>
-            <div className="w-full">
+          <div className="email-container flex gap-3 my-5 mb-7 items-center">
+            <label className="w-1/4 text-right">Share with :</label>
+            <div className="w-fit">
               <input
-                className="bg-orange-100/70 rounded-sm p-2 w-2/3 text-black"
+                placeholder="johndoe@gmail.com"
+                className="bg-orange-100/70 rounded-sm p-2 min-w-[30rem] text-black"
                 {...register("email")}
               />
               {errors.email && (
@@ -91,6 +126,18 @@ const NewNote = ({ isOpen, setIsOpen }: NoteActionType) => {
                   {errors.email.message}
                 </p>
               )}
+            </div>
+          </div>
+          <div className="email-container flex gap-3 my-5 items-center">
+            <label className="w-1/4 text-right">Permission :</label>
+            <div className="w-fit">
+              <select
+                className="bg-orange-100/70 px-2 py-1 rounded-lg min-w-[30rem]"
+                {...register("permission")}
+              >
+                <option value="view">View</option>
+                <option value="edit">Edit</option>
+              </select>
             </div>
           </div>
 

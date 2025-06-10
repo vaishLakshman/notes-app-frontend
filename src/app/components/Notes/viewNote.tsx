@@ -1,23 +1,117 @@
 "use client";
+import { useDeletNote } from "@/app/api/noteAPIs/deleteNote";
+import { useGetANote } from "@/app/api/noteAPIs/getNote";
+import { useFindUser } from "@/app/api/userAPIs/findUser";
+import { NoteType, UserStorageProps, ViewNoteType } from "@/app/types/types";
 import { useRouter } from "next/navigation";
-import { NoteActionType } from "./newNote";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
-const ViewNote = ({ isOpen, setIsOpen }: NoteActionType) => {
+const ViewNote = ({ noteId }: ViewNoteType) => {
   const router = useRouter();
-  const onFormSubmit = (e: any) => {
-    console.log(e);
+  const [noteData, setNoteData] = useState<NoteType>();
+  // const [collaborator, setCollaborator] = useState("");
+  const [ownerName, setOwnerName] = useState("");
+  const [ownerId, setOwnerId] = useState("");
+  const [isDelete, setIsDelete] = useState(false);
+  const [user, setUser] = useState<UserStorageProps>();
+  const user_session = localStorage.getItem("user");
+
+  const { getANote } = useGetANote();
+  const { findUser } = useFindUser();
+  const { deleteNote } = useDeletNote();
+
+  useEffect(() => {
+    if (user_session) setUser(JSON.parse(user_session));
+    // get note data using noteid
+    getNoteData();
+  }, []);
+
+  const getNoteData = async () => {
+    const res = await getANote(noteId);
+
+    if (res) {
+      setNoteData(res);
+      if (res?.owner) {
+        setOwnerId(res?.owner);
+        const data = await findUser(res?.owner);
+        if (data) setOwnerName(data.name);
+      }
+    } else {
+      // toast displaying invalid messgae
+      toast.error("Error fetching note");
+    }
   };
 
+  // To display Collaborator names
+
+  // const getAdditionalData = async () => {
+  //   if (noteData?.collaborator) {
+  //     const res = await findUserByEmail(noteData?.collaborator?.user_email);
+
+  //     if (res) setCollaborator(res.name);
+  //   }
+  // };
+
   const handleEditNote = () => {
-    router.push("/edit");
+    if (user?.user_id === ownerId) {
+      router.push(`/edit-note?id=${noteId}`);
+    } else {
+      toast.error("Not Authorized");
+    }
+  };
+
+  const handleDeleteClick = () => {
+    if (user?.user_id === ownerId) {
+      setIsDelete(true);
+    } else {
+      toast.error("Not Authorized");
+    }
+  };
+
+  const handleDelete = async () => {
+    // function to delete note using note.id
+    const res = await deleteNote(noteId);
+    if (res) {
+      toast.success("Note deleted successfully!");
+      router.push("/home");
+    } else {
+      toast.error("Error deleting note");
+    }
+  };
+
+  const handleCancel = () => {
+    // go back to home
+    router.push("/home");
   };
 
   return (
-    <div className="absolute lg:pb-12 w-full backdrop-blur-md">
-      <div className="lg:w-3/5 mx-auto mt-15 pb-7 bg-orange-200 rounded-2xl border-5 border-orange-300">
-        <div className="flex justify-end">
+    <div className="w-full">
+      {isDelete && (
+        <div className="h-dvh w-full absolute backdrop-blur-md flex justify-center items-center">
+          <div className="bg-orange-300 w-fit p-10 text-center rounded-xl shadow-lg text-red-900 font-jetbrains">
+            <h1 className="mb-7 text-xl font-semibold">Are you sure?</h1>
+            <div className="buttons-container flex gap-7 justify-between">
+              <button
+                className=" w-20 rounded-xl bg-orange-600/70 cursor-pointer font-bold"
+                onClick={handleDelete}
+              >
+                Yes
+              </button>
+              <button
+                className="py-2 px-3 w-20 rounded-xl bg-orange-600/40 cursor-pointer font-bold"
+                onClick={() => setIsDelete(!isDelete)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      <div className="h-dvh lg:w-full mx-auto pt-20 bg-orange-100 font-jetbrains text-red-900">
+        <div className="flex justify-end mb-10 ">
           <button
-            className="cursor-pointer mr-5 mt-3 opacity-50 hover:opacity-100"
+            className="cursor-pointer mr-5 mt-3 "
             onClick={() => handleEditNote()}
           >
             <svg
@@ -35,8 +129,8 @@ const ViewNote = ({ isOpen, setIsOpen }: NoteActionType) => {
             </svg>
           </button>
           <button
-            className="cursor-pointer mr-5 mt-3 opacity-50 hover:opacity-100"
-            onClick={() => setIsOpen(!isOpen)}
+            className="cursor-pointer mr-5 mt-3"
+            onClick={() => handleDeleteClick()}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -57,7 +151,7 @@ const ViewNote = ({ isOpen, setIsOpen }: NoteActionType) => {
           </button>
           <button
             className="cursor-pointer mr-5 mt-3"
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={() => handleCancel()}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -76,29 +170,23 @@ const ViewNote = ({ isOpen, setIsOpen }: NoteActionType) => {
           </button>
         </div>
 
-        <h1 className="w-fit mx-auto mb-5 text-3xl font-bold">Title</h1>
+        <h1 className="w-fit mx-auto mb-5 text-3xl font-bold">
+          {noteData?.title || "Title"}
+        </h1>
         <h2
-          className="w-4/5 mx-auto mb-5 bg-orange-100 px-2 py-3 rounded-xl text-xl"
+          className="w-4/5 min-h-80 mx-auto mb-5 bg-orange-200 px-2 py-3 rounded-xl text-xl"
           style={{ whiteSpace: "pre-wrap" }}
         >
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ipsam quas
-          at ratione? Nulla iusto voluptate, ab sunt incidunt ratione at, ex
-          delectus omnis inventore eius? Dignissimos deleniti ipsam rem amet
-          nostrum quae qui neque! Est minima nobis similique, aut libero et
-          saepe laboriosam deleniti laudantium dolor minus ea, tempore velit
-          aspernatur sed nisi magni veniam voluptate tempora eaque culpa quidem
-          accusantium? Perspiciatis rerum blanditiis voluptas velit. Quaerat
-          laudantium repellat accusantium pariatur sunt, laborum hic asperiores
-          possimus illo consectetur. Quasi tenetur dolorum amet rem.
+          {noteData?.content || "No data"}
         </h2>
-        <div className="flex gap-4 w-4/5 mx-auto mb-3 items-center">
-          <h1 className="text-xl font-semibold ">Owner :</h1>
-          <h2>hello hi bye</h2>
+        <div className="flex gap-4 w-4/5 mx-auto mb-3 items-center text-xl font-semibold ">
+          <h1>Owner :</h1>
+          <h2>{ownerName.toLocaleUpperCase() || "N.A"}</h2>
         </div>
-        <div className="flex gap-4 w-4/5 mx-auto items-center">
+        {/* <div className="flex gap-4 w-4/5 mx-auto items-center">
           <h1 className="text-xl font-semibold">Shared with :</h1>
-          <h2>hello hi bye</h2>
-        </div>
+          <h2>{collaborator ? collaborator : "N.A"}</h2>
+        </div> */}
       </div>
     </div>
   );

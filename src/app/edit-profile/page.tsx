@@ -1,13 +1,12 @@
 "use client";
-import { useRouter } from "next/navigation";
-import HomePage from "../components/homePage";
+import EditProfilePage from "../components/editProfilePage";
 import Navbar from "../components/navbar";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
-const Home = () => {
+const EditProfile = () => {
   const router = useRouter();
   const [flag, setFlag] = useState(false);
-  
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -17,16 +16,15 @@ const Home = () => {
       setFlag(true);
     }
   }, []);
-
   return (
     <div>
       {flag && (
         <div>
           <Navbar />
-          <HomePage />
+          <EditProfilePage />
         </div>
       )}
     </div>
   );
 };
-export default Home;
+export default EditProfile;

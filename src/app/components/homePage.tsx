@@ -1,33 +1,34 @@
 "use client";
-import { useState } from "react";
-import MiniNote from "./Notes/miniNote";
+import { useEffect, useState } from "react";
 import NewNote from "./Notes/newNote";
-import ViewNote from "./Notes/viewNote";
+import OwnNotes from "./ownNotes";
+import SharedNotes from "./sharedNotes";
+import { UserStorageProps } from "../types/types";
 
 const HomePage = () => {
-  const [isNotes, setIsNotes] = useState(true);
   const [createNote, setCreateNote] = useState(false);
-  const [viewNote, setViewNote] = useState(false);
+
+  const [user, setUser] = useState<UserStorageProps>();
+  const user_session = localStorage.getItem("user");
+  useEffect(() => {
+    if (user_session) setUser(JSON.parse(user_session));
+  }, []);
 
   return (
     <div className="min-h-dvh bg-orange-100 pt-17 pb-15 text-red-900 font-jetbrains">
-      {createNote && (
-        <div>
-          <NewNote isOpen={createNote} setIsOpen={setCreateNote} />
+      {createNote && user && (
+        <div className="">
+          <NewNote
+            isOpen={createNote}
+            setIsOpen={setCreateNote}
+            user_id={user.user_id}
+          />
         </div>
       )}
-      {viewNote && (
-        <div>
-          <ViewNote isOpen={viewNote} setIsOpen={setViewNote} />
-        </div>
-      )}
-      <div className="create-note-container flex justify-between items-center my-4 mb-15">
+      <div className="create-note-container my-4 mb-15">
         <div
           className="w-fit p-3 ml-3 flex gap-5 items-center cursor-pointer rounded-xl hover:bg-orange-200/50"
-          onClick={
-            () => setCreateNote(!createNote)
-            // setViewNote(!viewNote)
-          }
+          onClick={() => setCreateNote(!createNote)}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -43,30 +44,16 @@ const HomePage = () => {
             <line x1="12" y1="5" x2="12" y2="19"></line>
             <line x1="5" y1="12" x2="19" y2="12"></line>
           </svg>
-          <h2 className="font-semibold text-3xl">Create New Note</h2>
-        </div>
-        <div className="flex gap-3 mr-5  text-sm">
-          <p>Total Notes :</p>
-          <p>{"0"}</p>
+          <h2 className="font-semibold hidden lg:block lg:text-3xl">
+            Create New Note
+          </h2>
         </div>
       </div>
       <div className="">
-        {!isNotes ? (
-          <div className="flex mt-20 items-center justify-center">
-            <h1 className="text-2xl opacity-50 italic">No Notes added yet.</h1>
-          </div>
-        ) : (
-          <div className="grid grid-cols-3 gap-7 place-items-center">
-            <MiniNote />
-            <MiniNote />
-            <MiniNote />
-            <MiniNote />
-            <MiniNote />
-            <MiniNote />
-            <MiniNote />
-            <MiniNote />
-            <MiniNote />
-            <MiniNote />
+        {user && (
+          <div>
+            <OwnNotes userId={user.user_id} />
+            <SharedNotes userEmail={user.user_email} />
           </div>
         )}
       </div>

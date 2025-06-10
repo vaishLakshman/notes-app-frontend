@@ -1,13 +1,16 @@
 "use client";
-import { useRouter } from "next/navigation";
-import HomePage from "../components/homePage";
+import { useSearchParams } from "next/navigation";
 import Navbar from "../components/navbar";
+import ViewNote from "../components/Notes/viewNote";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
-const Home = () => {
-  const router = useRouter();
+const View = () => {
+  const searchParams = useSearchParams();
+  const noteId = searchParams?.get("id");
   const [flag, setFlag] = useState(false);
-  
+
+  const router = useRouter();
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -23,10 +26,10 @@ const Home = () => {
       {flag && (
         <div>
           <Navbar />
-          <HomePage />
+          <ViewNote noteId={noteId || ""} />
         </div>
       )}
     </div>
   );
 };
-export default Home;
+export default View;
