@@ -15,7 +15,7 @@
 
 ## 🛠️ Tech Stack
 
-- [Next.js]((https://nextjs.org/))
+- [Next.js](https://nextjs.org/)
 - [TypeScript](https://www.typescriptlang.org/) 
 - [Axios](https://axios-http.com/)
 - [Zod](https://zod.dev/)
