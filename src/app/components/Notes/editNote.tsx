@@ -59,6 +59,7 @@ const EditNote = ({ noteId }: ViewNoteType) => {
       const user = await findUserByEmail(e.email);
       if (user) {
         note = {
+          id: noteId,
           title: e.title,
           content: e.content,
           collaborator: {
@@ -71,6 +72,7 @@ const EditNote = ({ noteId }: ViewNoteType) => {
         if (res) {
           // toast message for success
           toast.success("Note edited sucessfully!");
+          router.push("/home");
         }
       } else {
         //toast message for invalid email
@@ -78,10 +80,12 @@ const EditNote = ({ noteId }: ViewNoteType) => {
       }
     } else {
       note = {
+        id: noteId,
         title: e.title,
         content: e.content,
       };
       const res = await editNote(note);
+      console.log("edit data ->", res);
 
       if (res) {
         // toast message for success
