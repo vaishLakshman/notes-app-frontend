@@ -2,18 +2,18 @@
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useFindUser } from "@/app/api/userAPIs/findUser";
 import { useGetANote } from "@/app/api/noteAPIs/getNote";
-import { NoteType, ViewNoteType } from "@/app/types/types";
+import { NoteType } from "@/app/types/types";
 import { useEditNote } from "@/app/api/noteAPIs/editNote";
 import { noteSchema } from "./newNote";
 import toast from "react-hot-toast";
 
 type editNoteData = z.infer<typeof noteSchema>;
 
-const EditNote = ({ noteId }: ViewNoteType) => {
+const EditNote = () => {
   const {
     register,
     handleSubmit,
@@ -22,6 +22,7 @@ const EditNote = ({ noteId }: ViewNoteType) => {
     resolver: zodResolver(noteSchema),
   });
   const router = useRouter();
+  const noteId = useSearchParams().get("id") || '';
 
   const [noteData, setNoteData] = useState<NoteType>();
   const [collaborator, setCollaborator] = useState("");

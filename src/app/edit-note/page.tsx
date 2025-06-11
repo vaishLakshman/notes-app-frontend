@@ -1,13 +1,10 @@
 "use client";
-import { useSearchParams } from "next/navigation";
 import Navbar from "../components/navbar";
 import EditNote from "../components/Notes/editNote";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const Edit = () => {
-  const searchParams = useSearchParams();
-  const noteId = searchParams.get("id");
   const [flag, setFlag] = useState(false);
 
   const router = useRouter();
@@ -26,7 +23,7 @@ const Edit = () => {
       {flag && (
         <div>
           <Navbar />
-          <EditNote noteId={noteId || ""} />
+          <EditNote />
         </div>
       )}
     </div>

@@ -8,11 +8,11 @@ import {
   UserStorageProps,
   ViewNoteType,
 } from "@/app/types/types";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-const ViewNote = ({ noteId }: ViewNoteType) => {
+const ViewNote = () => {
   const router = useRouter();
   const [noteData, setNoteData] = useState<NoteType>();
   const [collaborator, setCollaborator] = useState<CollaboratorType>();
@@ -21,6 +21,8 @@ const ViewNote = ({ noteId }: ViewNoteType) => {
   const [isDelete, setIsDelete] = useState(false);
   const [user, setUser] = useState<UserStorageProps>();
   const user_session = localStorage.getItem("user");
+
+  const noteId = useSearchParams().get("id") || '';
 
   const { getANote } = useGetANote();
   const { findUser } = useFindUser();
