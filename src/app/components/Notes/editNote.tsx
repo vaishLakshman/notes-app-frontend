@@ -90,6 +90,7 @@ const EditNote = ({ noteId }: ViewNoteType) => {
       if (res) {
         // toast message for success
         toast.success("Note edited successfully!");
+        router.push("/home");
       } else {
         //toast message for invalid email
         toast.error("Error editing note");
