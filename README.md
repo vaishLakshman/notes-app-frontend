@@ -8,24 +8,26 @@
 
 - ✅ User authentication using JWT token.
 - ✅ Simple and user friendly UI.
-- ✅ Handled API calls using custom hook functions
-- ✅ Form validation and handling using zod and react-hook-form
-  
+- ✅ Handled API calls using custom hook functions.
+- ✅ User Permission based access to editing and deleting data.
+- ✅ Form validation and handling using zod and react-hook-form.
+
 ---
 
 ## 🛠️ Tech Stack
 
 - [Next.js](https://nextjs.org/)
-- [TypeScript](https://www.typescriptlang.org/) 
+- [TypeScript](https://www.typescriptlang.org/)
 - [Axios](https://axios-http.com/)
 - [Zod](https://zod.dev/)
 - [react-hook-form](https://react-hook-form.com/)
 
 ---
+
 ## 🚧 Future Additions
 
-- Additional validations on edit note & profile data.
-- Real time updation in notes.
+- Additional validations checks on edit note & profile data.
+- Real time updation in notes using Websockets.
 - Display names of collaborators.
 - Enable multiple collaborators on one note.
 
@@ -47,3 +49,4 @@ yarn install
 
 # 4. Run the development server
 npm run dev
+```

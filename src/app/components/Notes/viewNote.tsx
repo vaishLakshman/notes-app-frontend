@@ -2,7 +2,12 @@
 import { useDeletNote } from "@/app/api/noteAPIs/deleteNote";
 import { useGetANote } from "@/app/api/noteAPIs/getNote";
 import { useFindUser } from "@/app/api/userAPIs/findUser";
-import { NoteType, UserStorageProps, ViewNoteType } from "@/app/types/types";
+import {
+  CollaboratorType,
+  NoteType,
+  UserStorageProps,
+  ViewNoteType,
+} from "@/app/types/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -10,7 +15,7 @@ import toast from "react-hot-toast";
 const ViewNote = ({ noteId }: ViewNoteType) => {
   const router = useRouter();
   const [noteData, setNoteData] = useState<NoteType>();
-  // const [collaborator, setCollaborator] = useState("");
+  const [collaborator, setCollaborator] = useState<CollaboratorType>();
   const [ownerName, setOwnerName] = useState("");
   const [ownerId, setOwnerId] = useState("");
   const [isDelete, setIsDelete] = useState(false);
@@ -34,6 +39,7 @@ const ViewNote = ({ noteId }: ViewNoteType) => {
       setNoteData(res);
       if (res?.owner) {
         setOwnerId(res?.owner);
+        setCollaborator(res?.collaborator);
         const data = await findUser(res?.owner);
         if (data) setOwnerName(data.name);
       }
@@ -42,6 +48,8 @@ const ViewNote = ({ noteId }: ViewNoteType) => {
       toast.error("Error fetching note");
     }
   };
+
+  console.log("collab", collaborator);
 
   // To display Collaborator names
 
@@ -54,7 +62,10 @@ const ViewNote = ({ noteId }: ViewNoteType) => {
   // };
 
   const handleEditNote = () => {
-    if (user?.user_id === ownerId) {
+    if (
+      user?.user_email === collaborator?.user_email &&
+      collaborator?.permission === "edit"
+    ) {
       router.push(`/edit-note?id=${noteId}`);
     } else {
       toast.error("Not Authorized");
@@ -62,7 +73,10 @@ const ViewNote = ({ noteId }: ViewNoteType) => {
   };
 
   const handleDeleteClick = () => {
-    if (user?.user_id === ownerId) {
+    if (
+      user?.user_email === collaborator?.user_email &&
+      collaborator?.permission === "edit"
+    ) {
       setIsDelete(true);
     } else {
       toast.error("Not Authorized");

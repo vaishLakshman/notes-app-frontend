@@ -79,7 +79,6 @@ const EditNote = ({ noteId }: ViewNoteType) => {
     } else {
       //toast message for invalid email
     }
-    console.log(e);
   };
 
   return (

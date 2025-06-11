@@ -1,4 +1,4 @@
-interface CollaboratorType {
+export interface CollaboratorType {
   user_email: string;
   permission: string;
 }
