@@ -18,7 +18,6 @@ const OwnNotes = ({ userId }: UserIdProps) => {
       setNoteData(res);
     }
   };
-  console.log("notess", noteData);
 
   return (
     <div>

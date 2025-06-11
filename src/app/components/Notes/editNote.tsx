@@ -42,7 +42,6 @@ const EditNote = ({ noteId }: ViewNoteType) => {
 
   const getNoteData = async () => {
     const res = await getANote(noteId);
-    console.log("Edited response :", res);
 
     if (res) {
       setNoteData(res);

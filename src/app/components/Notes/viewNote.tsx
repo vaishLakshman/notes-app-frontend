@@ -49,8 +49,6 @@ const ViewNote = ({ noteId }: ViewNoteType) => {
     }
   };
 
-  console.log("collab", collaborator);
-
   // To display Collaborator names
 
   // const getAdditionalData = async () => {

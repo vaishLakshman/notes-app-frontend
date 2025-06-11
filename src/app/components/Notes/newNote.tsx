@@ -30,7 +30,6 @@ const NewNote = ({ user_id, isOpen, setIsOpen }: NoteActionType) => {
 
   const onFormSubmit = async (e: any) => {
     const user = await findUserByEmail(e.email);
-    console.log("user email", e);
 
     if (user) {
       const note = {
@@ -43,7 +42,6 @@ const NewNote = ({ user_id, isOpen, setIsOpen }: NoteActionType) => {
         },
       };
       const res = await createNote(note);
-      console.log("hy", note);
 
       if (res) {
         // toast message for success
@@ -54,7 +52,6 @@ const NewNote = ({ user_id, isOpen, setIsOpen }: NoteActionType) => {
       //toast message for invalid email
       toast.error("Invalid Email of Collaborator");
     }
-    console.log(e);
   };
 
   return (

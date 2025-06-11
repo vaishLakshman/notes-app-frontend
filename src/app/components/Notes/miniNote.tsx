@@ -1,8 +1,6 @@
 import { MiniNoteType } from "@/app/types/types";
 import { useRouter } from "next/navigation";
 
-
-
 const MiniNote = ({ note }: MiniNoteType) => {
   const router = useRouter();
   const noteData = note;

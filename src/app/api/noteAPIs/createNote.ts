@@ -9,7 +9,6 @@ export const useCreateNote = () => {
   const createNote = async (note: NoteType) => {
     setLoading(true);
     setError(null);
-    console.log("New note ->", note);
 
     try {
       const response = await api.post("/note/create-note", note);
