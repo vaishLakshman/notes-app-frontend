@@ -18,13 +18,4 @@ api.interceptors.request.use(
   },
   (error) => Promise.reject(error)
 );
-
-// api.interceptors.response.use(
-//   (response) => response,
-//   (error) => {
-//     // Handle errors globally
-//     console.error("API Error:", error);
-//     return Promise.reject(error);
-//   }
-// );
 export default api;
