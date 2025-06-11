@@ -12,7 +12,7 @@ const Navbar = () => {
   const user_session = localStorage.getItem("user");
   useEffect(() => {
     if (user_session) setUser(JSON.parse(user_session));
-  }, []);
+  }, [user_session]);
 
   const handleEditProfile = () => {
     router.push("/edit-profile");

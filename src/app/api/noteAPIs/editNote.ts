@@ -15,6 +15,7 @@ export const useEditNote = () => {
         const data = response.data;
         return data.noteData;
       }
+       // eslint-disable-next-line
     } catch (error: any) {
       setError(error.response?.data?.message || "Edit failed");
       return null;

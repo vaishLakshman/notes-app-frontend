@@ -17,6 +17,7 @@ export const useDeletNote = () => {
       if (response.status === 204) {
         return "Note deleted successfully";
       }
+       // eslint-disable-next-line
     } catch (error: any) {
       setError(error.response?.data?.message || "Unable to Edit Profile");
       return null;

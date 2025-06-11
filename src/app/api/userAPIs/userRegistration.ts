@@ -23,6 +23,7 @@ export const useRegister = () => {
         localStorage.setItem("token", data.token);
         return data.userData;
       }
+       // eslint-disable-next-line
     } catch (error: any) {
       setError(error.response?.data?.message || "Registration failed");
       return null;

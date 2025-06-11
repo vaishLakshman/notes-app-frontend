@@ -18,6 +18,7 @@ export const useEditProfile = () => {
         const data = response.data;
         return data.userData;
       }
+       // eslint-disable-next-line
     } catch (error: any) {
       setError(error.response?.data?.message || "Unable to Edit Profile");
       return null;

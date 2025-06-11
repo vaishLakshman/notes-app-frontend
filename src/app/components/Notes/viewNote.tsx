@@ -30,7 +30,7 @@ const ViewNote = ({ noteId }: ViewNoteType) => {
     if (user_session) setUser(JSON.parse(user_session));
     // get note data using noteid
     getNoteData();
-  }, []);
+  }, [user_session]);
 
   const getNoteData = async () => {
     const res = await getANote(noteId);

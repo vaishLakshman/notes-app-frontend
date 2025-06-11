@@ -18,6 +18,7 @@ export const useGetSharedNotes = () => {
         const data = response.data;
         return data.notesData;
       }
+       // eslint-disable-next-line
     } catch (error: any) {
       setError(error.response?.data?.message || "Cannot fetch notes");
       return null;

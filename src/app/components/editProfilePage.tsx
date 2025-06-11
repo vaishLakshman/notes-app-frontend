@@ -37,8 +37,9 @@ const EditProfilePage = () => {
   const { editUser } = useEditProfile();
   useEffect(() => {
     if (user_session) setUser(JSON.parse(user_session));
-  }, []);
+  }, [user_session]);
 
+  // eslint-disable-next-line
   const onFormSubmit = async (e: any) => {
     const res = await editUser(e.name, e.email, e.repeat_password);
 

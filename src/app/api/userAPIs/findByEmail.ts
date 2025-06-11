@@ -18,6 +18,7 @@ export const useFindByEmail = () => {
         const data = response.data;
         return data.userData;
       }
+       // eslint-disable-next-line
     } catch (error: any) {
       setError(error.response?.data?.message || "Cannot fetch User");
       return null;

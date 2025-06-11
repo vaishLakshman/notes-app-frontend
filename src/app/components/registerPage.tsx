@@ -37,6 +37,7 @@ const RegisterPage = () => {
     localStorage.removeItem("token");
   }, []);
 
+  // eslint-disable-next-line
   const onFormSubmit = async (e: any) => {
     const res = await registerUser(e.name, e.email, e.password);
 

@@ -13,9 +13,10 @@ export const useCreateNote = () => {
     try {
       const response = await api.post("/note/create-note", note);
       if (response.status === 201) {
-        const data = response.data;
+        // const data = response.data;
         return "Note created";
       }
+      // eslint-disable-next-line
     } catch (error: any) {
       setError(error.response?.data?.message || "Note creation failed");
       return null;

@@ -38,6 +38,7 @@ const NewNote = ({ user_id, isOpen, setIsOpen }: NoteActionType) => {
   const { findUserByEmail } = useFindUser();
   const { createNote } = useCreateNote();
 
+   // eslint-disable-next-line
   const onFormSubmit = async (e: any) => {
     let note;
     if (e.email) {

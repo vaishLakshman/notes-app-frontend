@@ -31,6 +31,7 @@ const LoginPage = () => {
     localStorage.removeItem("token");
   }, []);
 
+  // eslint-disable-next-line
   const onFormSubmit = async (e: any) => {
     const res = await login(e.email, e.password);
 
