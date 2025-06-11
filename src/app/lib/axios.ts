@@ -4,7 +4,6 @@ import axios from "axios";
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_SERVER_URL,
 });
-console.log("url", process.env.NEXT_PUBLIC_SERVER_URL);
 
 // Set Token along with requests
 api.interceptors.request.use(
