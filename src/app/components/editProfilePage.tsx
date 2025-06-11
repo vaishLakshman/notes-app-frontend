@@ -11,8 +11,7 @@ import toast from "react-hot-toast";
 
 const registerSchema = z
   .object({
-    name: z.string().min(1, "Enter a valid name"),
-    email: z.string().email("Invalid Email"),
+    name: z.string().min(1, "Enter a valid name").optional(),
     password: z.string().min(5, "Password must be at least 5 characters"),
     repeat_password: z.string(),
   })
@@ -106,7 +105,7 @@ const EditProfilePage = () => {
               )}
             </div>
           </div>
-          <div className="email-container flex gap-3 my-10 items-center">
+          {/* <div className="email-container flex gap-3 my-10 items-center">
             <label className="w-2/4 text-right">Email :</label>
             <div className="w-full">
               <input
@@ -121,7 +120,7 @@ const EditProfilePage = () => {
                 </p>
               )}
             </div>
-          </div>
+          </div> */}
 
           <div className="password-container  flex gap-3 my-10 items-center">
             <label className="w-2/4 text-right">New Password :</label>
