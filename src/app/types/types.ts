@@ -8,15 +8,8 @@ export interface NoteType {
   _id?: string;
   title: string;
   content: string;
-  owner: string;
+  owner?: string;
   last_updated?: string;
-  collaborator?: CollaboratorType;
-}
-
-export interface EditNoteType {
-  id: string;
-  title: string;
-  content: string;
   collaborator?: CollaboratorType;
 }
 

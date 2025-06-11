@@ -39,8 +39,6 @@ const NewNote = ({ user_id, isOpen, setIsOpen }: NoteActionType) => {
   const { createNote } = useCreateNote();
 
   const onFormSubmit = async (e: any) => {
-    console.log("data ->", e);
-
     let note;
     if (e.email) {
       const user = await findUserByEmail(e.email);

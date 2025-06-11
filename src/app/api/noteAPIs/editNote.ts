@@ -1,16 +1,16 @@
 import { useState } from "react";
 import api from "../../lib/axios";
-import { EditNoteType } from "@/app/types/types";
+import { NoteType } from "@/app/types/types";
 
 export const useEditNote = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const editNote = async (note: EditNoteType) => {
+  const editNote = async (note: NoteType) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await api.post("/note/edit-note", note);
+      const response = await api.put("/note/edit-note", note);
       if (response.status === 200) {
         const data = response.data;
         return data.noteData;

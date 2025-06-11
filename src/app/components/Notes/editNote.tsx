@@ -54,27 +54,42 @@ const EditNote = ({ noteId }: ViewNoteType) => {
   };
 
   const onFormSubmit = async (e: any) => {
-    // post newly edited data
-    const user = await findUserByEmail(e.email);
-    if (user) {
-      const note = {
-        id: noteId,
-        title: e.title,
-        content: e.content,
-        collaborator: {
-          user_email: e.email,
-          permission: e.permission,
-        },
-      };
-      const res = await editNote(note);
-      if (res) {
-        // toast message for success
-        toast.success("Note edited successfully");
-        router.push("/");
+    let note;
+    if (e.email) {
+      const user = await findUserByEmail(e.email);
+      if (user) {
+        note = {
+          title: e.title,
+          content: e.content,
+          collaborator: {
+            user_email: e.email,
+            permission: e.permission,
+          },
+        };
+        const res = await editNote(note);
+
+        if (res) {
+          // toast message for success
+          toast.success("Note edited sucessfully!");
+        }
+      } else {
+        //toast message for invalid email
+        toast.error("Invalid Email of Collaborator");
       }
     } else {
-      //toast message for invalid email
-      toast.error("Unable to edit note");
+      note = {
+        title: e.title,
+        content: e.content,
+      };
+      const res = await editNote(note);
+
+      if (res) {
+        // toast message for success
+        toast.success("Note edited successfully!");
+      } else {
+        //toast message for invalid email
+        toast.error("Error editing note");
+      }
     }
   };
 
