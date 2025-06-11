@@ -19,9 +19,6 @@ export interface NoteActionType {
   setIsOpen: (data: boolean) => void;
 }
 
-export interface ViewNoteType {
-  noteId: string;
-}
 
 export interface UserEmailProps {
   userEmail: string;

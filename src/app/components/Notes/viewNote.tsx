@@ -6,7 +6,6 @@ import {
   CollaboratorType,
   NoteType,
   UserStorageProps,
-  ViewNoteType,
 } from "@/app/types/types";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
