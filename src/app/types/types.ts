@@ -43,3 +43,7 @@ export interface UserStorageProps {
   name: string;
   user_email: string;
 }
+
+export interface MiniNoteType {
+  note: NoteType;
+}

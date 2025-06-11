@@ -1,9 +1,7 @@
-import { NoteType } from "@/app/types/types";
+import { MiniNoteType } from "@/app/types/types";
 import { useRouter } from "next/navigation";
 
-interface MiniNoteType {
-  note: NoteType;
-}
+
 
 const MiniNote = ({ note }: MiniNoteType) => {
   const router = useRouter();
