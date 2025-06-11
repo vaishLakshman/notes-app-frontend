@@ -122,7 +122,8 @@ const EditNote = () => {
         <div className="flex justify-start">
           <button
             className="cursor-pointer ml-5 mt-7"
-            onClick={() => router.push("/home")}
+            type="button"
+            onClick={() => router.back()}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
