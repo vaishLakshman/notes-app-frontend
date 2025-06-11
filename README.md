@@ -11,6 +11,7 @@
 - ✅ Handled API calls using custom hook functions.
 - ✅ User Permission based access to editing and deleting data.
 - ✅ Form validation and handling using zod and react-hook-form.
+- ✅ Toast messages to notify user using react-hot-toast.
 
 ---
 
