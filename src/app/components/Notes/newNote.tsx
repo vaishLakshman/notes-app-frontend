@@ -7,39 +7,69 @@ import { NoteActionType } from "@/app/types/types";
 import toast from "react-hot-toast";
 import { useFindUser } from "@/app/api/userAPIs/findUser";
 
-const newNoteSchema = z.object({
+export const noteSchema = z.object({
   title: z.string().min(1, "Enter a valid title"),
-  email: z.string().email("Invalid Email"),
-  content: z.string(),
-  permission: z.string(),
+  email: z
+    .string()
+    .optional()
+    .refine(
+      (val) =>
+        !val || val.trim() === "" || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val),
+      {
+        message: "Invalid email",
+      }
+    ),
+
+  content: z.string().optional(),
+  permission: z.string().optional(),
 });
 
-type newNoteData = z.infer<typeof newNoteSchema>;
+type noteData = z.infer<typeof noteSchema>;
 
 const NewNote = ({ user_id, isOpen, setIsOpen }: NoteActionType) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<newNoteData>({
-    resolver: zodResolver(newNoteSchema),
+  } = useForm<noteData>({
+    resolver: zodResolver(noteSchema),
   });
 
   const { findUserByEmail } = useFindUser();
   const { createNote } = useCreateNote();
 
   const onFormSubmit = async (e: any) => {
-    const user = await findUserByEmail(e.email);
+    console.log("data ->", e);
 
-    if (user) {
-      const note = {
+    let note;
+    if (e.email) {
+      const user = await findUserByEmail(e.email);
+      if (user) {
+        note = {
+          title: e.title,
+          content: e.content,
+          owner: user_id,
+          collaborator: {
+            user_email: e.email,
+            permission: e.permission,
+          },
+        };
+        const res = await createNote(note);
+
+        if (res) {
+          // toast message for success
+          toast.success("New Note Created");
+          setIsOpen(!isOpen);
+        }
+      } else {
+        //toast message for invalid email
+        toast.error("Invalid Email of Collaborator");
+      }
+    } else {
+      note = {
         title: e.title,
         content: e.content,
         owner: user_id,
-        collaborator: {
-          user_email: e.email,
-          permission: e.permission,
-        },
       };
       const res = await createNote(note);
 
@@ -47,15 +77,15 @@ const NewNote = ({ user_id, isOpen, setIsOpen }: NoteActionType) => {
         // toast message for success
         toast.success("New Note Created");
         setIsOpen(!isOpen);
+      } else {
+        //toast message for invalid email
+        toast.error("Error creating note");
       }
-    } else {
-      //toast message for invalid email
-      toast.error("Invalid Email of Collaborator");
     }
   };
 
   return (
-    <div className="absolute lg:pb-12 w-full backdrop-blur-md">
+    <div className="absolute lg:pb-12 h-full w-full backdrop-blur-md">
       <form
         onSubmit={handleSubmit(onFormSubmit)}
         className=" lg:w-3/7 mx-auto mt-15 pb-7 bg-orange-200 shadow-xl border- border-orange-300"

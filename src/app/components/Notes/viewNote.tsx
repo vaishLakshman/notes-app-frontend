@@ -61,8 +61,9 @@ const ViewNote = ({ noteId }: ViewNoteType) => {
 
   const handleEditNote = () => {
     if (
-      user?.user_email === collaborator?.user_email &&
-      collaborator?.permission === "edit"
+      (user?.user_email === collaborator?.user_email &&
+        collaborator?.permission === "edit") ||
+      user?.user_id === ownerId
     ) {
       router.push(`/edit-note?id=${noteId}`);
     } else {
@@ -72,8 +73,9 @@ const ViewNote = ({ noteId }: ViewNoteType) => {
 
   const handleDeleteClick = () => {
     if (
-      user?.user_email === collaborator?.user_email &&
-      collaborator?.permission === "edit"
+      (user?.user_email === collaborator?.user_email &&
+        collaborator?.permission === "edit") ||
+      user?.user_id === ownerId
     ) {
       setIsDelete(true);
     } else {

@@ -8,15 +8,10 @@ import { useFindUser } from "@/app/api/userAPIs/findUser";
 import { useGetANote } from "@/app/api/noteAPIs/getNote";
 import { NoteType, ViewNoteType } from "@/app/types/types";
 import { useEditNote } from "@/app/api/noteAPIs/editNote";
+import { noteSchema } from "./newNote";
+import toast from "react-hot-toast";
 
-const newNoteSchema = z.object({
-  title: z.string().min(1, "Enter a valid title"),
-  email: z.string().email("Invalid Email"),
-  content: z.string(),
-  permission: z.string(),
-});
-
-type editNoteData = z.infer<typeof newNoteSchema>;
+type editNoteData = z.infer<typeof noteSchema>;
 
 const EditNote = ({ noteId }: ViewNoteType) => {
   const {
@@ -24,7 +19,7 @@ const EditNote = ({ noteId }: ViewNoteType) => {
     handleSubmit,
     formState: { errors },
   } = useForm<editNoteData>({
-    resolver: zodResolver(newNoteSchema),
+    resolver: zodResolver(noteSchema),
   });
   const router = useRouter();
 
@@ -74,9 +69,12 @@ const EditNote = ({ noteId }: ViewNoteType) => {
       const res = await editNote(note);
       if (res) {
         // toast message for success
+        toast.success("Note edited successfully");
+        router.push("/");
       }
     } else {
       //toast message for invalid email
+      toast.error("Unable to edit note");
     }
   };
 
