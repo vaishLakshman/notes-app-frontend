@@ -7,7 +7,7 @@ import { NoteActionType } from "@/app/types/types";
 import toast from "react-hot-toast";
 import { useFindUser } from "@/app/api/userAPIs/findUser";
 
-export const noteSchema = z.object({
+const noteSchema = z.object({
   title: z.string().min(1, "Enter a valid title"),
   email: z
     .string()
@@ -38,7 +38,7 @@ const NewNote = ({ user_id, isOpen, setIsOpen }: NoteActionType) => {
   const { findUserByEmail } = useFindUser();
   const { createNote } = useCreateNote();
 
-   // eslint-disable-next-line
+  // eslint-disable-next-line
   const onFormSubmit = async (e: any) => {
     let note;
     if (e.email) {

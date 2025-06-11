@@ -8,10 +8,26 @@ import { useFindUser } from "@/app/api/userAPIs/findUser";
 import { useGetANote } from "@/app/api/noteAPIs/getNote";
 import { NoteType } from "@/app/types/types";
 import { useEditNote } from "@/app/api/noteAPIs/editNote";
-import { noteSchema } from "./newNote";
 import toast from "react-hot-toast";
 
-type editNoteData = z.infer<typeof noteSchema>;
+const editNoteSchema = z.object({
+  title: z.string().optional(),
+  email: z
+    .string()
+    .optional()
+    .refine(
+      (val) =>
+        !val || val.trim() === "" || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val),
+      {
+        message: "Invalid email",
+      }
+    ),
+
+  content: z.string().optional(),
+  permission: z.string().optional(),
+});
+
+type editNoteData = z.infer<typeof editNoteSchema>;
 
 const EditNote = () => {
   const {
@@ -19,10 +35,10 @@ const EditNote = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<editNoteData>({
-    resolver: zodResolver(noteSchema),
+    resolver: zodResolver(editNoteSchema),
   });
   const router = useRouter();
-  const noteId = useSearchParams().get("id") || '';
+  const noteId = useSearchParams().get("id") || "";
 
   const [noteData, setNoteData] = useState<NoteType>();
   const [collaborator, setCollaborator] = useState("");
