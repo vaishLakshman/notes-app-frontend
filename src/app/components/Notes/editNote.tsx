@@ -53,6 +53,7 @@ const EditNote = ({ noteId }: ViewNoteType) => {
     }
   };
 
+  // eslint-disable-next-line
   const onFormSubmit = async (e: any) => {
     let note;
     if (e.email) {
